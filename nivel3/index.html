@@ -828,18 +828,133 @@
         </section>
     </main>
     <script>
-        const $ = id => document.getElementById(id); let completed = new Set(); function show(id) { document.querySelectorAll('.screen').forEach(x => x.classList.remove('active')); $(id).classList.add[...]
-        function menu() { const g = $('games'); g.innerHTML = '';[{ id: 'relation', icon: '🧩', name: 'RELACIONA ALIADOS' }, { id: 'map', icon: '🔎', name: 'ENCUENTRA ALIADOS' }, { id: 'decision',[...]
-        const relations = [['Niños con dificultades de acceso a educación', '🏫', 'Institución educativa'], ['Necesidad de organizar a los habitantes', '🏘️', 'Junta de Acción Comunal'], ['C[...]
-        function initRelation() { selectedP = selectedA = null; correctRelations = 0; $('matchLines').innerHTML = ''; $('relationFeedback').className = 'feedback'; $('relationFeedback').textContent = [...]
-        function selectRelation(type, b) { if (b.classList.contains('correct')) return; if (type === 'p') { document.querySelectorAll('#problems .match-item').forEach(x => x.classList.remove('selected[...]
-        function drawRelationLine(a, b) { const board = $('matchBoard'), svg = $('matchLines'), br = board.getBoundingClientRect(), ar = a.getBoundingClientRect(), cr = b.getBoundingClientRect(), l = [...]
-        const spots = [{ icon: '🏫', name: 'Institución educativa', x: 83, y: 38 }, { icon: '🏘️', name: 'Junta de Acción Comunal', x: 48, y: 40 }, { icon: '🏥', name: 'Centro de salud', x: [...]
-        function initMap() { found = 0; $('mapOverlay').innerHTML = ''; $('mapFinal').innerHTML = ''; $('mapStatus').textContent = 'ALIADOS ENCONTRADOS: 0/5'; spots.forEach(s => { const b = document.c[...]
-        function findAlly(b, s) { if (b.classList.contains('found')) return; b.classList.add('found'); found++; celebrate(b); const badge = document.createElement('div'); badge.className = 'found-badg[...]
-        function initDecision() { const h = $('decisionOptions'); h.innerHTML = ''; $('decisionFeedback').className = 'feedback'; $('decisionFeedback').textContent = 'Selecciona una opción.';['A. Tal[...]
-        function chooseDecision(i, b) { if (completed.has('decision')) return; if (i === 2) { b.classList.add('correct'); completed.add('decision'); celebrate(b); $('decisionFeedback').className = 'fe[...]
-        function celebrate(el) { const r = el.getBoundingClientRect(), e = document.createElement('div'); e.className = 'effect'; e.textContent = '✓ CORRECTO'; e.style.left = r.left + r.width / 2 + [...]
+        const $ = id => document.getElementById(id);
+        let completed = new Set();
+
+        function show(id) {
+            document.querySelectorAll('.screen').forEach(x => x.classList.remove('active'));
+            const el = $(id);
+            if (el) el.classList.add('active');
+        }
+
+        function updateProgress() {
+            const total = 3;
+            const done = completed.size;
+            const pct = Math.round((done / total) * 100);
+            const fill = $('fill');
+            if (fill) fill.style.width = pct + '%';
+            const prog = $('progress');
+            if (prog) prog.textContent = `RETOS COMPLETADOS: ${done}/${total}`;
+        }
+
+        function menu() {
+            show('menu');
+            const g = $('games');
+            if (!g) return;
+            g.innerHTML = '';
+            const games = [{ id: 'relation', icon: '🧩', name: 'RELACIONA ALIADOS' }, { id: 'map', icon: '🔎', name: 'ENCUENTRA ALIADOS' }, { id: 'decision', icon: '🔐', name: 'RETO DE DECISIÓN' }];
+            games.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'gamecard' + (completed.has(game.id) ? ' done' : '');
+                card.innerHTML = `<span class="gamecard-icon">${game.icon}</span><div>${game.name}</div>`;
+                card.onclick = () => {
+                    show(game.id);
+                    if (game.id === 'relation') initRelation();
+                    if (game.id === 'map') initMap();
+                    if (game.id === 'decision') initDecision();
+                };
+                g.appendChild(card);
+            });
+            updateProgress();
+        }
+
+        function initRelation() {
+            const problemsEl = $('problems');
+            const orgsEl = $('organizations');
+            if (!problemsEl || !orgsEl) return;
+            problemsEl.innerHTML = '';
+            orgsEl.innerHTML = '';
+            $('relationFeedback').className = 'feedback';
+            $('relationFeedback').textContent = 'Selecciona una problemática y luego su aliado.';
+            const relations = [['Niños con dificultades de acceso a educación', '🏫', 'Institución educativa'], ['Necesidad de organizar a los habitantes', '🏘️', 'Junta de Acción Comunal'], ['Falta de atención médica básica', '🏥', 'Centro de salud']];
+            relations.forEach((r, i) => {
+                const p = document.createElement('div');
+                p.className = 'match-item';
+                p.textContent = r[0];
+                problemsEl.appendChild(p);
+                const o = document.createElement('div');
+                o.className = 'match-item';
+                o.textContent = r[2];
+                orgsEl.appendChild(o);
+            });
+        }
+
+        function initMap() {
+            const overlay = $('mapOverlay');
+            if (!overlay) return;
+            overlay.innerHTML = '';
+            $('mapFinal').innerHTML = '';
+            $('mapStatus').textContent = 'ALIADOS ENCONTRADOS: 0/5';
+            const spots = [{ icon: '🏫', name: 'Institución educativa', x: 83, y: 38 }, { icon: '🏘️', name: 'Junta de Acción Comunal', x: 48, y: 40 }, { icon: '🏥', name: 'Centro de salud', x: 62, y: 55 }, { icon: '⚕️', name: 'Salud móvil', x: 30, y: 70 }, { icon: '🛒', name: 'Mercado local', x: 20, y: 25 }];
+            spots.forEach(s => {
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'hidden-ally';
+                b.style.left = s.x + '%';
+                b.style.top = s.y + '%';
+                b.textContent = s.icon;
+                b.title = s.name;
+                b.onclick = () => {
+                    if (b.classList.contains('found')) return;
+                    b.classList.add('found');
+                    const found = overlay.querySelectorAll('.hidden-ally.found').length;
+                    $('mapStatus').textContent = `ALIADOS ENCONTRADOS: ${found}/${spots.length}`;
+                    if (found === spots.length) {
+                        completed.add('map');
+                        updateProgress();
+                        $('mapFinal').textContent = '¡Has encontrado todos los aliados!';
+                    }
+                };
+                overlay.appendChild(b);
+            });
+        }
+
+        function initDecision() {
+            const h = $('decisionOptions');
+            if (!h) return;
+            h.innerHTML = '';
+            $('decisionFeedback').className = 'feedback';
+            $('decisionFeedback').textContent = 'Selecciona una opción.';
+            const opts = ['A. Líder comunitario', 'B. ONG local', 'C. Miembro de la Junta'];
+            opts.forEach((t, i) => {
+                const b = document.createElement('div');
+                b.className = 'decision-option';
+                b.textContent = t;
+                b.onclick = () => {
+                    if (completed.has('decision')) return;
+                    if (i === 1) {
+                        b.classList.add('correct');
+                        completed.add('decision');
+                        updateProgress();
+                        $('decisionFeedback').className = 'feedback ok';
+                        $('decisionFeedback').textContent = '¡Correcto! La ONG local puede facilitar la organización.';
+                    } else {
+                        b.classList.add('incorrect');
+                        $('decisionFeedback').className = 'feedback bad';
+                        $('decisionFeedback').textContent = 'No es la mejor opción. Intenta otra vez.';
+                        setTimeout(() => b.classList.remove('incorrect'), 600);
+                    }
+                };
+                h.appendChild(b);
+            });
+        }
+
+        // Populate menu but keep start visible on load
+        document.addEventListener('DOMContentLoaded', () => {
+            menu();
+            // keep start screen active until user clicks COMENZAR
+            show('start');
+        });
     </script>
 </body>
 
