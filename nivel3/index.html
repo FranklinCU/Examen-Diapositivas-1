@@ -532,23 +532,25 @@
 
         .hidden-ally {
             position: absolute;
-            width: 50px;
-            height: 50px;
+            /* tamaño relativo al contenedor de mapa para que escale con la imagen */
+            width: 6%;
+            height: 6%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: clamp(14px, 2.4vmin, 28px);
             cursor: pointer;
             background: rgba(255, 248, 233, .94);
-            border: 3px solid var(--ink);
+            border: 0.5vmin solid var(--ink);
             border-radius: 50%;
-            box-shadow: 3px 3px rgba(75, 53, 41, .55);
+            box-shadow: 0.4vmin 0.4vmin rgba(75, 53, 41, .55);
             animation: blink 1.6s ease-in-out infinite;
-            transform: translate(-50%, -50%)
+            transform: translate(-50%, -50%);
+            transition: transform .12s, width .12s, height .12s, font-size .12s
         }
 
         .hidden-ally:hover {
-            transform: translate(-50%, -50%) scale(1.1)
+            transform: translate(-50%, -50%) scale(1.05)
         }
 
         .hidden-ally.found {
@@ -696,10 +698,13 @@
                 height: auto
             }
 
+            /* iconos más grandes en pantallas pequeñas pero aún relativos */
             .hidden-ally {
-                width: 40px;
-                height: 40px;
-                font-size: 21px
+                width: 8%;
+                height: 8%;
+                font-size: clamp(12px, 3.2vmin, 22px);
+                border-width: 0.6vmin;
+                box-shadow: 0.4vmin 0.4vmin rgba(75,53,41,.55);
             }
 
             .game {
@@ -823,18 +828,18 @@
         </section>
     </main>
     <script>
-        const $ = id => document.getElementById(id); let completed = new Set(); function show(id) { document.querySelectorAll('.screen').forEach(x => x.classList.remove('active')); $(id).classList.add('active') }
-        function menu() { const g = $('games'); g.innerHTML = '';[{ id: 'relation', icon: '🧩', name: 'RELACIONA ALIADOS' }, { id: 'map', icon: '🔎', name: 'ENCUENTRA ALIADOS' }, { id: 'decision', icon: '🔐', name: 'RETO DE DECISIÓN' }].forEach(x => { const b = document.createElement('button'); b.className = 'gamecard' + (completed.has(x.id) ? ' done' : ''); b.innerHTML = `<span class="gamecard-icon">${completed.has(x.id) ? '✅' : x.icon}</span>${x.name}<span class="gamecard-check">${completed.has(x.id) ? '✓ COMPLETADO' : 'JUGAR'}</span>`; b.onclick = () => { show(x.id); x.id === 'relation' ? initRelation() : x.id === 'map' ? initMap() : initDecision() }; g.appendChild(b) }); $('fill').style.width = completed.size / 3 * 100 + '%'; $('progress').textContent = `RETOS COMPLETADOS: ${completed.size}/3`; show('menu') }
-        const relations = [['Niños con dificultades de acceso a educación', '🏫', 'Institución educativa'], ['Necesidad de organizar a los habitantes', '🏘️', 'Junta de Acción Comunal'], ['Consumo de sustancias psicoactivas entre jóvenes', '🏥', 'Centro de salud'], ['Acompañamiento espiritual y social', '⛪', 'Organización religiosa'], ['Gestión de recursos y programas públicos', '🏛️', 'Entidad gubernamental']]; let selectedP = null, selectedA = null, correctRelations = 0;
-        function initRelation() { selectedP = selectedA = null; correctRelations = 0; $('matchLines').innerHTML = ''; $('relationFeedback').className = 'feedback'; $('relationFeedback').textContent = 'Selecciona una problemática y luego su aliado.'; $('problems').innerHTML = ''; $('organizations').innerHTML = ''; relations.forEach((r, i) => { const b = document.createElement('button'); b.className = 'match-item'; b.dataset.id = i; b.textContent = r[0]; b.onclick = () => selectRelation('p', b); $('problems').appendChild(b) }); relations.slice().sort(() => Math.random() - .5).forEach(r => { const b = document.createElement('button'); b.className = 'match-item'; b.dataset.id = relations.indexOf(r); b.innerHTML = `<span class="icon">${r[1]}</span>${r[2]}`; b.onclick = () => selectRelation('a', b); $('organizations').appendChild(b) }) }
-        function selectRelation(type, b) { if (b.classList.contains('correct')) return; if (type === 'p') { document.querySelectorAll('#problems .match-item').forEach(x => x.classList.remove('selected')); selectedP = b } else { document.querySelectorAll('#organizations .match-item').forEach(x => x.classList.remove('selected')); selectedA = b } b.classList.add('selected'); if (selectedP && selectedA) { if (selectedP.dataset.id === selectedA.dataset.id) { selectedP.classList.remove('selected'); selectedA.classList.remove('selected'); selectedP.classList.add('correct'); selectedA.classList.add('correct'); drawRelationLine(selectedP, selectedA); correctRelations++; celebrate(selectedA); $('relationFeedback').className = 'feedback ok'; $('relationFeedback').textContent = `¡Relación correcta! ${correctRelations}/5.`; selectedP = selectedA = null; if (correctRelations === 5) { completed.add('relation'); $('relationFeedback').textContent = '🟢 Has relacionado correctamente las organizaciones aliadas.' } } else { $('relationFeedback').className = 'feedback bad'; $('relationFeedback').textContent = 'Esa organización no corresponde a la problemática seleccionada.'; selectedP.classList.remove('selected'); selectedA.classList.remove('selected'); selectedP = selectedA = null } } }
-        function drawRelationLine(a, b) { const board = $('matchBoard'), svg = $('matchLines'), br = board.getBoundingClientRect(), ar = a.getBoundingClientRect(), cr = b.getBoundingClientRect(), l = document.createElementNS('http://www.w3.org/2000/svg', 'line'); l.setAttribute('x1', ar.right - br.left); l.setAttribute('y1', ar.top + ar.height / 2 - br.top); l.setAttribute('x2', cr.left - br.left); l.setAttribute('y2', cr.top + cr.height / 2 - br.top); svg.appendChild(l) }
-        const spots = [{ icon: '🏫', name: 'Institución educativa', x: 83, y: 38 }, { icon: '🏘️', name: 'Junta de Acción Comunal', x: 48, y: 40 }, { icon: '🏥', name: 'Centro de salud', x: 87, y: 90 }, { icon: '⛪', name: 'Organización religiosa', x: 87, y: 20 }, { icon: '🏛️', name: 'Entidad gubernamental', x: 68, y: 12 }]; let found = 0;
-        function initMap() { found = 0; $('mapOverlay').innerHTML = ''; $('mapFinal').innerHTML = ''; $('mapStatus').textContent = 'ALIADOS ENCONTRADOS: 0/5'; spots.forEach(s => { const b = document.createElement('button'); b.className = 'hidden-ally'; b.textContent = s.icon; b.title = s.name; b.style.left = s.x + '%'; b.style.top = s.y + '%'; b.onclick = () => findAlly(b, s); $('mapOverlay').appendChild(b) }) }
-        function findAlly(b, s) { if (b.classList.contains('found')) return; b.classList.add('found'); found++; celebrate(b); const badge = document.createElement('div'); badge.className = 'found-badge'; badge.textContent = '¡ALIADO ENCONTRADO!'; badge.style.left = b.style.left; badge.style.top = b.style.top; $('mapOverlay').appendChild(badge); const name = document.createElement('div'); name.className = 'found-name'; name.textContent = s.name; name.style.left = b.style.left; name.style.top = b.style.top; $('mapOverlay').appendChild(name); setTimeout(() => { badge.remove(); name.remove() }, 2600); $('mapStatus').textContent = `${s.icon} ${s.name} · ALIADOS ENCONTRADOS: ${found}/5`; if (found === 5) { completed.add('map'); setTimeout(() => { $('mapFinal').innerHTML = '<p style="color:#31562f">🟢 Has identificado los recursos organizativos que pueden participar en el trabajo comunitario.</p><button class="btn green" onclick="menu()">VOLVER AL MENÚ ▶</button>' }, 500) } }
-        function initDecision() { const h = $('decisionOptions'); h.innerHTML = ''; $('decisionFeedback').className = 'feedback'; $('decisionFeedback').textContent = 'Selecciona una opción.';['A. Taller de motos', 'B. Tienda de barrio', 'C. Junta de Acción Comunal', 'D. Carpintería'].forEach((t, i) => { const b = document.createElement('button'); b.className = 'decision-option'; b.textContent = t; b.onclick = () => chooseDecision(i, b); h.appendChild(b) }) }
-        function chooseDecision(i, b) { if (completed.has('decision')) return; if (i === 2) { b.classList.add('correct'); completed.add('decision'); celebrate(b); $('decisionFeedback').className = 'feedback ok'; $('decisionFeedback').textContent = '¡DECISIÓN CORRECTA! Los aliados comunitarios permiten articular esfuerzos y facilitar la participación.'; setTimeout(() => { $('decisionFeedback').innerHTML += ' <br><button class="btn green" style="margin-top:9px" onclick="menu()">VOLVER AL MENÚ ▶</button>' }, 450) } else { b.classList.add('incorrect'); $('decisionFeedback').className = 'feedback bad'; $('decisionFeedback').textContent = 'Esta opción no facilita la organización comunitaria. Inténtalo nuevamente.'; setTimeout(() => b.classList.remove('incorrect'), 450) } }
-        function celebrate(el) { const r = el.getBoundingClientRect(), e = document.createElement('div'); e.className = 'effect'; e.textContent = '✓ CORRECTO'; e.style.left = r.left + r.width / 2 + 'px'; e.style.top = r.top + 'px'; document.body.appendChild(e); setTimeout(() => e.remove(), 1100) }
+        const $ = id => document.getElementById(id); let completed = new Set(); function show(id) { document.querySelectorAll('.screen').forEach(x => x.classList.remove('active')); $(id).classList.add[...]
+        function menu() { const g = $('games'); g.innerHTML = '';[{ id: 'relation', icon: '🧩', name: 'RELACIONA ALIADOS' }, { id: 'map', icon: '🔎', name: 'ENCUENTRA ALIADOS' }, { id: 'decision',[...]
+        const relations = [['Niños con dificultades de acceso a educación', '🏫', 'Institución educativa'], ['Necesidad de organizar a los habitantes', '🏘️', 'Junta de Acción Comunal'], ['C[...]
+        function initRelation() { selectedP = selectedA = null; correctRelations = 0; $('matchLines').innerHTML = ''; $('relationFeedback').className = 'feedback'; $('relationFeedback').textContent = [...]
+        function selectRelation(type, b) { if (b.classList.contains('correct')) return; if (type === 'p') { document.querySelectorAll('#problems .match-item').forEach(x => x.classList.remove('selected[...]
+        function drawRelationLine(a, b) { const board = $('matchBoard'), svg = $('matchLines'), br = board.getBoundingClientRect(), ar = a.getBoundingClientRect(), cr = b.getBoundingClientRect(), l = [...]
+        const spots = [{ icon: '🏫', name: 'Institución educativa', x: 83, y: 38 }, { icon: '🏘️', name: 'Junta de Acción Comunal', x: 48, y: 40 }, { icon: '🏥', name: 'Centro de salud', x: [...]
+        function initMap() { found = 0; $('mapOverlay').innerHTML = ''; $('mapFinal').innerHTML = ''; $('mapStatus').textContent = 'ALIADOS ENCONTRADOS: 0/5'; spots.forEach(s => { const b = document.c[...]
+        function findAlly(b, s) { if (b.classList.contains('found')) return; b.classList.add('found'); found++; celebrate(b); const badge = document.createElement('div'); badge.className = 'found-badg[...]
+        function initDecision() { const h = $('decisionOptions'); h.innerHTML = ''; $('decisionFeedback').className = 'feedback'; $('decisionFeedback').textContent = 'Selecciona una opción.';['A. Tal[...]
+        function chooseDecision(i, b) { if (completed.has('decision')) return; if (i === 2) { b.classList.add('correct'); completed.add('decision'); celebrate(b); $('decisionFeedback').className = 'fe[...]
+        function celebrate(el) { const r = el.getBoundingClientRect(), e = document.createElement('div'); e.className = 'effect'; e.textContent = '✓ CORRECTO'; e.style.left = r.left + r.width / 2 + [...]
     </script>
 </body>
 
