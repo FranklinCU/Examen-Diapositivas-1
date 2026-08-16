@@ -36,19 +36,23 @@
         }
 
         body {
-            font: clamp(16px, 2.2vw, 21px) VT323, monospace;
+            font: clamp(16px, 2.2vmin, 21px) VT323, monospace;
             color: var(--ink);
             background: var(--sand);
-            image-rendering: pixelated
+            image-rendering: pixelated;
+            display: grid;
+            place-items: center
         }
 
         .game {
-            width: 100%;
-            height: 100dvh;
+            width: min(100%, 1000px);
+            height: min(100dvh, 880px);
+            max-height: 100%;
             min-height: 0;
-            padding: clamp(6px, 1.4vw, 15px);
+            padding: clamp(6px, 1.4vmin, 15px);
             display: flex;
             flex-direction: column;
+            overflow: hidden;
             background: linear-gradient(90deg, rgba(255, 255, 255, .12) 2px, transparent 2px) 0 0/16px 16px, linear-gradient(rgba(255, 255, 255, .08) 2px, transparent 2px) 0 0/16px 16px, var(--sand)
         }
 
@@ -58,11 +62,11 @@
             align-items: center;
             justify-content: space-between;
             gap: 10px;
-            padding: clamp(7px, 1.2vw, 13px) clamp(9px, 1.5vw, 16px);
+            padding: clamp(7px, 1.2vmin, 13px) clamp(9px, 1.5vmin, 16px);
             background: var(--night);
             border: 4px solid var(--ink);
             color: var(--cream);
-            font: clamp(7px, 1vw, 10px)/1.5 'Press Start 2P', monospace;
+            font: clamp(7px, 1vmin, 10px)/1.5 'Press Start 2P', monospace;
             box-shadow: 4px 4px 0 var(--shadow)
         }
 
@@ -75,7 +79,7 @@
             display: none;
             flex: 1;
             min-height: 0;
-            margin-top: clamp(7px, 1.4vw, 15px)
+            margin-top: clamp(7px, 1.4vmin, 15px)
         }
 
         .screen.active {
@@ -100,7 +104,7 @@
             width: 100%;
             min-height: 0;
             overflow: hidden;
-            padding: clamp(11px, 3vw, 34px);
+            padding: clamp(11px, 3vmin, 34px);
             border: 4px solid var(--ink);
             background: var(--cream);
             box-shadow: 6px 6px 0 var(--shadow);
@@ -117,15 +121,15 @@
         }
 
         h1 {
-            font-size: clamp(17px, 3.1vw, 31px)
+            font-size: clamp(17px, 3.1vmin, 31px)
         }
 
         h2 {
-            font-size: clamp(12px, 1.9vw, 19px)
+            font-size: clamp(12px, 1.9vmin, 19px)
         }
 
         h3 {
-            font-size: clamp(9px, 1.1vw, 11px)
+            font-size: clamp(9px, 1.1vmin, 11px)
         }
 
         p {
@@ -149,8 +153,8 @@
             background: var(--brown);
             border: 4px solid var(--ink);
             box-shadow: 5px 5px 0 var(--ink);
-            font: clamp(8px, 1.2vw, 12px)/1.35 'Press Start 2P', monospace;
-            padding: clamp(9px, 1.4vw, 14px) clamp(11px, 1.8vw, 18px);
+            font: clamp(8px, 1.2vmin, 12px)/1.35 'Press Start 2P', monospace;
+            padding: clamp(9px, 1.4vmin, 14px) clamp(11px, 1.8vmin, 18px);
             transition: transform .08s, box-shadow .08s, filter .12s
         }
 
@@ -177,7 +181,7 @@
         }
 
         .label {
-            font: clamp(8px, 1vw, 10px)/1.6 'Press Start 2P', monospace;
+            font: clamp(8px, 1vmin, 10px)/1.6 'Press Start 2P', monospace;
             color: var(--brown)
         }
 
@@ -194,7 +198,7 @@
             width: min(820px, 100%);
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: clamp(10px, 2.3vw, 24px);
+            gap: clamp(10px, 2.3vmin, 24px);
             margin: clamp(12px, 3vh, 28px) 0
         }
 
@@ -204,8 +208,8 @@
             background: #f9e4c1;
             border: 4px solid var(--ink);
             box-shadow: 5px 5px var(--shadow);
-            padding: clamp(10px, 1.8vw, 16px);
-            font: clamp(8px, 1.05vw, 11px)/1.6 'Press Start 2P', monospace;
+            padding: clamp(10px, 1.8vmin, 16px);
+            font: clamp(8px, 1.05vmin, 11px)/1.6 'Press Start 2P', monospace;
             transition: .12s
         }
 
@@ -221,14 +225,14 @@
 
         .mission-card .icon {
             display: block;
-            font-size: clamp(35px, 5vw, 55px);
+            font-size: clamp(35px, 5vmin, 55px);
             margin-bottom: 8px
         }
 
         .mission-card small {
             display: block;
             color: #31562f;
-            font-size: clamp(7px, .8vw, 8px);
+            font-size: clamp(7px, .8vmin, 8px);
             margin-top: 6px
         }
 
@@ -258,12 +262,12 @@
             height: 100%;
             display: grid;
             grid-template-columns: minmax(230px, .8fr) minmax(320px, 1.2fr);
-            gap: clamp(12px, 3vw, 30px);
+            gap: clamp(12px, 3vmin, 30px);
             align-items: center
         }
 
         .info-card {
-            padding: clamp(11px, 2vw, 20px);
+            padding: clamp(11px, 2vmin, 20px);
             border: 3px solid var(--ink);
             background: rgba(249, 228, 193, .94);
             box-shadow: 4px 4px var(--shadow)
@@ -272,16 +276,16 @@
         .info-card .big-icon {
             display: block;
             text-align: center;
-            font-size: clamp(48px, 8vw, 85px)
+            font-size: clamp(48px, 8vmin, 85px)
         }
 
         .info-card p {
-            font-size: clamp(17px, 2.4vw, 22px)
+            font-size: clamp(17px, 2.4vmin, 22px)
         }
 
         .action-list {
             display: grid;
-            gap: clamp(6px, 1vw, 10px)
+            gap: clamp(6px, 1vmin, 10px)
         }
 
         .action {
@@ -289,13 +293,13 @@
             align-items: center;
             gap: 8px;
             min-height: clamp(40px, 6.5vh, 58px);
-            padding: clamp(6px, 1.1vw, 11px);
+            padding: clamp(6px, 1.1vmin, 11px);
             cursor: pointer;
             text-align: left;
             border: 3px solid var(--ink);
             background: rgba(246, 223, 185, .96);
             box-shadow: 3px 3px var(--shadow);
-            font: clamp(15px, 2vw, 19px)/1.05 VT323, monospace;
+            font: clamp(15px, 2vmin, 19px)/1.05 VT323, monospace;
             transition: .1s
         }
 
@@ -358,7 +362,7 @@
             padding: 8px;
             border: 3px dashed var(--brown);
             background: #f8edcf;
-            font-size: clamp(15px, 2vw, 19px);
+            font-size: clamp(15px, 2vmin, 19px);
             line-height: 1.05
         }
 
@@ -390,11 +394,11 @@
         }
 
         .sentence {
-            padding: clamp(13px, 2vw, 22px);
+            padding: clamp(13px, 2vmin, 22px);
             border: 4px solid var(--ink);
             background: #f4dfba;
             box-shadow: 4px 4px var(--shadow);
-            font: clamp(20px, 3vw, 31px)/1.5 VT323;
+            font: clamp(20px, 3vmin, 31px)/1.5 VT323;
             text-align: center
         }
 
@@ -404,7 +408,7 @@
 
         .blank {
             display: inline-flex;
-            min-width: clamp(92px, 13vw, 155px);
+            min-width: clamp(92px, 13vmin, 155px);
             min-height: clamp(34px, 5vh, 48px);
             margin: 3px 4px;
             padding: 3px 8px;
@@ -435,17 +439,17 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: clamp(6px, 1.1vw, 11px);
+            gap: clamp(6px, 1.1vmin, 11px);
             margin: clamp(14px, 2.5vh, 22px) 0
         }
 
         .word {
             cursor: pointer;
-            padding: clamp(8px, 1.3vw, 13px) clamp(9px, 1.5vw, 16px);
+            padding: clamp(8px, 1.3vmin, 13px) clamp(9px, 1.5vmin, 16px);
             border: 3px solid var(--ink);
             background: #f6dfb9;
             box-shadow: 3px 3px var(--shadow);
-            font: clamp(9px, 1.3vw, 13px) 'Press Start 2P', monospace;
+            font: clamp(9px, 1.3vmin, 13px) 'Press Start 2P', monospace;
             transition: .1s
         }
 
@@ -461,7 +465,7 @@
         .fill-status {
             min-height: 28px;
             margin-top: 5px;
-            font: clamp(9px, 1.2vw, 12px) 'Press Start 2P', monospace
+            font: clamp(9px, 1.2vmin, 12px) 'Press Start 2P', monospace
         }
 
         .fill-status.good {
@@ -493,7 +497,7 @@
         }
 
         .trophy {
-            font-size: clamp(58px, 10vw, 105px);
+            font-size: clamp(58px, 10vmin, 105px);
             line-height: 1;
             filter: drop-shadow(5px 5px var(--shadow));
             animation: trophy 1.4s steps(3, end) infinite
@@ -513,7 +517,7 @@
         .badges {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: clamp(6px, 1.3vw, 13px);
+            gap: clamp(6px, 1.3vmin, 13px);
             margin: clamp(10px, 2vh, 20px) 0
         }
 
@@ -523,20 +527,20 @@
             background: #f9e4c1;
             border: 3px solid var(--ink);
             box-shadow: 3px 3px var(--shadow);
-            font: clamp(7px, .9vw, 9px)/1.5 'Press Start 2P', monospace
+            font: clamp(7px, .9vmin, 9px)/1.5 'Press Start 2P', monospace
         }
 
         .badge .bicon {
-            font-size: clamp(26px, 4vw, 43px);
+            font-size: clamp(26px, 4vmin, 43px);
             display: block;
             margin-bottom: 6px
         }
 
         .final-message {
-            padding: clamp(9px, 1.7vw, 16px);
+            padding: clamp(9px, 1.7vmin, 16px);
             background: rgba(255, 248, 232, .82);
             border: 3px solid var(--brown);
-            font-size: clamp(17px, 2.4vw, 23px);
+            font-size: clamp(17px, 2.4vmin, 23px);
             line-height: 1.15
         }
 
@@ -616,7 +620,7 @@
             pointer-events: none;
             color: var(--moss);
             text-shadow: 2px 2px var(--cream);
-            font: clamp(10px, 1.7vw, 16px) 'Press Start 2P', monospace;
+            font: clamp(10px, 1.7vmin, 16px) 'Press Start 2P', monospace;
             animation: score 1s steps(4, end) forwards
         }
 
@@ -727,7 +731,7 @@
             <div class="panel center start-game">
                 <div class="label">🧑‍🔬 MISIÓN FINAL</div>
                 <h1>EL BACTERIÓLOGO EN LA COMUNIDAD</h1>
-                <p style="font-size:clamp(19px,2.7vw,27px);max-width:720px">Decide cómo puede contribuir el bacteriólogo
+                <p style="font-size:clamp(19px,2.7vmin,27px);max-width:720px">Decide cómo puede contribuir el bacteriólogo
                     al bienestar de Calle Larga.</p><button class="btn" onclick="menu()">▶ INICIAR MISIÓN FINAL</button>
             </div>
         </section>
@@ -765,7 +769,7 @@
                 <div class="fill-layout">
                     <div class="label">💬 RETO FINAL</div>
                     <h1>MI APORTE</h1>
-                    <p style="font-size:clamp(18px,2.5vw,24px)">Completa los espacios con las palabras correctas.</p>
+                    <p style="font-size:clamp(18px,2.5vmin,24px)">Completa los espacios con las palabras correctas.</p>
                     <div class="sentence" id="sentence"></div>
                     <div class="word-bank" id="wordBank"></div>
                     <div class="fill-status good" id="fillStatus">SELECCIONA UNA OPCIÓN PARA INICIAR</div>
@@ -780,7 +784,7 @@
                 <div class="final-content">
                     <div class="trophy">🏆</div>
                     <h1>🎉 ¡MISIÓN CUMPLIDA!</h1>
-                    <p style="font-size:clamp(19px,2.7vw,27px)">Has completado la Operación Calle Larga.</p>
+                    <p style="font-size:clamp(19px,2.7vmin,27px)">Has completado la Operación Calle Larga.</p>
                     <div class="badges">
                         <div class="badge"><span class="bicon">🏘️</span>CONOCER UNA COMUNIDAD Y SU TERRITORIO</div>
                         <div class="badge"><span class="bicon">🕵️</span>IDENTIFICAR DETERMINANTES SOCIALES</div>
