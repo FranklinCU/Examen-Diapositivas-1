@@ -30,13 +30,11 @@ html, body {
 
 body {
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg);
   color: var(--text);
   font-family: 'VT323', monospace;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: clamp(4px, 2vw, 12px);
+  padding: 0;
   user-select: none;
 }
 
@@ -48,14 +46,18 @@ button {
 }
 
 .game-shell {
-  width: min(100%, 700px);
+  width: 100%;
   min-width: 0;
-  max-width: 700px;
+  max-width: none;
+  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--panel-light);
-  border: 6px solid var(--brown-dark);
-  box-shadow: 12px 12px 0 var(--shadow);
+  border: 0;
+  box-shadow: none;
   padding: clamp(10px, 4vw, 20px);
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .topbar {
@@ -87,7 +89,14 @@ button, .pixel-title, .pixel-subtitle, .menu-title, .mission-heading,
 }
 
 .screen { display: none; }
-.screen.active { display: block; }
+.screen.active { display: flex; flex: 1; min-height: 0; }
+
+.screen.active > .start-card,
+.screen.active > .mission-card,
+.screen.active > .success-card {
+  width: 100%;
+  min-height: 100%;
+}
 
 .start-card, .mission-card, .success-card {
   background: var(--panel);
@@ -98,6 +107,11 @@ button, .pixel-title, .pixel-subtitle, .menu-title, .mission-heading,
 }
 
 .start-card, .mission-card, .success-card { min-width: 0; }
+
+.start-card, .success-card {
+  display: grid;
+  align-content: center;
+}
 
 .pixel-title {
   font-size: 32px;
@@ -330,8 +344,7 @@ button, .pixel-title, .pixel-subtitle, .menu-title, .mission-heading,
 }
 
 @media (max-width: 480px) {
-  body { align-items: flex-start; }
-  .game-shell { border-width: 4px; box-shadow: 6px 6px 0 var(--shadow); }
+  .game-shell { padding: 8px; }
   .topbar { gap: 6px; padding-bottom: 8px; margin-bottom: 8px; font-size: 16px; }
   .badge { padding: 6px 8px; box-shadow: 2px 2px 0 var(--shadow); }
   .start-card, .mission-card, .success-card { border-width: 4px; padding: 10px 8px; box-shadow: 4px 4px 0 var(--shadow); }
