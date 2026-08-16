@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <title>Operación Calle Larga — Nivel 3</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
@@ -34,27 +34,29 @@
         }
 
         body {
-            font: 21px VT323, monospace;
             background: var(--sand);
-            color: var(--ink)
+            color: var(--ink);
+            font: clamp(16px, 2.2vw, 21px) VT323, monospace
         }
 
         .game {
             height: 100dvh;
-            padding: 14px;
+            min-height: 0;
+            padding: clamp(7px, 1.3vw, 14px);
             display: flex;
             flex-direction: column;
             background: repeating-linear-gradient(90deg, #e7c49d 0 14px, #eacaa5 14px 16px)
         }
 
         .top {
-            flex: none;
+            flex: 0 0 auto;
             background: var(--ink);
-            color: #fff8e9;
-            padding: 13px 16px;
+            color: var(--cream);
+            padding: clamp(8px, 1.2vw, 13px) clamp(10px, 1.6vw, 16px);
             display: flex;
             justify-content: space-between;
-            font: 10px 'Press Start 2P', monospace
+            gap: 8px;
+            font: clamp(7px, 1vw, 10px)/1.45 'Press Start 2P', monospace
         }
 
         .top span:last-child {
@@ -87,11 +89,12 @@
         .box {
             height: 100%;
             width: 100%;
+            min-height: 0;
             overflow: hidden;
             border: 4px solid var(--ink);
             background: var(--cream);
             box-shadow: 6px 6px 0 var(--shadow);
-            padding: clamp(16px, 3vw, 36px);
+            padding: clamp(12px, 2.7vw, 36px);
             position: relative
         }
 
@@ -99,26 +102,26 @@
         h2,
         h3 {
             font-family: 'Press Start 2P', monospace;
-            line-height: 1.45;
+            line-height: 1.4;
             color: var(--brown);
-            margin: .3em 0
+            margin: .25em 0
         }
 
         h1 {
-            font-size: clamp(18px, 3vw, 30px)
+            font-size: clamp(17px, 3vw, 30px)
         }
 
         h2 {
-            font-size: clamp(13px, 1.9vw, 19px)
+            font-size: clamp(12px, 1.8vw, 19px)
         }
 
         h3 {
-            font-size: 11px
+            font-size: clamp(9px, 1.1vw, 11px)
         }
 
         p {
-            line-height: 1.15;
-            margin: .5em 0
+            line-height: 1.12;
+            margin: .45em 0
         }
 
         .center {
@@ -127,7 +130,8 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            height: 100%
+            height: 100%;
+            min-height: 0
         }
 
         .btn {
@@ -135,14 +139,13 @@
             border: 3px solid var(--ink);
             box-shadow: 4px 4px 0 var(--shadow);
             background: var(--brown);
-            color: #fff8e9;
-            font: 11px 'Press Start 2P', monospace;
-            padding: 13px 16px;
+            color: var(--cream);
+            font: clamp(9px, 1.2vw, 11px) 'Press Start 2P', monospace;
+            padding: clamp(9px, 1.2vw, 13px) clamp(10px, 1.5vw, 16px);
             transition: transform .08s, filter .12s
         }
 
-        .btn:hover,
-        .btn:focus {
+        .btn:hover {
             filter: brightness(.92);
             outline: 3px solid var(--sun);
             outline-offset: 3px
@@ -161,30 +164,30 @@
             background-image: linear-gradient(rgba(75, 53, 41, .32), rgba(75, 53, 41, .55)), url('imagen1.jpeg');
             background-size: cover;
             background-position: center;
-            color: #fff8e9
+            color: var(--cream)
         }
 
         .start-bg h1 {
             color: #ffe9b8;
-            text-shadow: 3px 3px 0 #4b3529
+            text-shadow: 3px 3px 0 var(--ink)
         }
 
         .gamesgrid {
             width: min(760px, 100%);
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: clamp(12px, 2.5vw, 22px);
-            margin: clamp(16px, 3.5vh, 28px) 0
+            gap: clamp(9px, 2vw, 22px);
+            margin: clamp(12px, 3vh, 28px) 0
         }
 
         .gamecard {
-            min-height: 160px;
-            padding: 16px 10px;
+            min-height: clamp(110px, 19vh, 160px);
+            padding: clamp(9px, 1.5vw, 16px) 8px;
             cursor: pointer;
             background: #f9e7c8;
             border: 4px solid var(--ink);
             box-shadow: 5px 5px 0 var(--shadow);
-            font: 10px/1.7 'Press Start 2P', monospace;
+            font: clamp(8px, 1vw, 10px)/1.7 'Press Start 2P', monospace;
             transition: .12s
         }
 
@@ -195,8 +198,8 @@
 
         .gamecard-icon {
             display: block;
-            font-size: 46px;
-            margin-bottom: 10px
+            font-size: clamp(30px, 4vw, 46px);
+            margin-bottom: 8px
         }
 
         .gamecard.done {
@@ -207,12 +210,12 @@
         .gamecard-check {
             display: block;
             color: #31562f;
-            font-size: 8px
+            font-size: clamp(7px, .8vw, 8px)
         }
 
         .bar {
             width: min(600px, 90%);
-            height: 18px;
+            height: 16px;
             border: 3px solid var(--ink);
             background: #f5dfbd
         }
@@ -225,12 +228,13 @@
         }
 
         .feedback {
-            min-height: 44px;
-            margin-top: 12px;
-            padding: 8px;
+            min-height: clamp(38px, 6vh, 52px);
+            margin-top: clamp(6px, 1vh, 12px);
+            padding: clamp(6px, 1vw, 8px);
             border: 3px dashed var(--brown);
             background: #f8edcf;
-            font-size: 19px
+            font-size: clamp(16px, 2vw, 19px);
+            line-height: 1.05
         }
 
         .feedback.ok {
@@ -245,18 +249,13 @@
             color: #7a322d
         }
 
-        .next {
-            text-align: right;
-            margin-top: 10px
-        }
-
         .effect {
             position: fixed;
             z-index: 20;
             pointer-events: none;
             color: var(--ok);
             text-shadow: 2px 2px var(--cream);
-            font: 16px 'Press Start 2P', monospace;
+            font: clamp(11px, 1.6vw, 16px) 'Press Start 2P', monospace;
             animation: scoreUp 1s steps(4, end) forwards
         }
 
@@ -277,71 +276,87 @@
             }
         }
 
-        /* Relacionar aliados */
-        .match-wrap {
+        /* Relación: tablero flexible y sin alturas forzadas */
+        .relation-layout {
             height: 100%;
+            min-height: 0;
             display: flex;
             flex-direction: column
         }
 
         .match-instruction {
-            padding: 9px 11px;
+            padding: clamp(6px, 1vw, 9px) clamp(8px, 1.2vw, 11px);
             background: #f0ddba;
             border-left: 5px solid var(--brown);
-            font-size: 19px
+            font-size: clamp(16px, 2vw, 19px);
+            flex: none
         }
 
         .match-board {
             position: relative;
             flex: 1;
             min-height: 0;
-            margin-top: 10px
+            margin-top: clamp(7px, 1.2vh, 10px);
+            overflow: visible
         }
 
         .match-grid {
             position: relative;
             z-index: 2;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14%;
-            height: 100%
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: clamp(10px, 7vw, 14%);
+            height: 100%;
+            align-items: stretch
+        }
+
+        .match-column {
+            min-width: 0;
+            display: flex;
+            flex-direction: column
+        }
+
+        .col-title {
+            font: clamp(8px, 1vw, 10px) 'Press Start 2P', monospace;
+            color: var(--brown);
+            text-align: center;
+            margin-bottom: clamp(4px, 1vh, 8px);
+            flex: none
         }
 
         .match-col {
             display: flex;
+            flex: 1;
+            min-height: 0;
             flex-direction: column;
-            gap: 9px;
-            justify-content: center
-        }
-
-        .col-title {
-            font: 10px 'Press Start 2P', monospace;
-            color: var(--brown);
-            text-align: center;
-            margin-bottom: 4px
+            justify-content: space-evenly;
+            gap: clamp(4px, 1vh, 9px)
         }
 
         .match-item {
             width: 100%;
-            min-height: 54px;
+            min-height: 0;
+            flex: 1;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: clamp(5px, 1vw, 8px);
             text-align: left;
-            padding: 9px 10px;
+            padding: clamp(5px, 1vw, 9px) clamp(6px, 1.1vw, 10px);
             cursor: pointer;
             border: 3px solid var(--ink);
             background: #f5dfbc;
             box-shadow: 3px 3px var(--shadow);
-            font: clamp(14px, 1.7vw, 18px)/1.05 VT323, monospace
+            font: clamp(13px, 1.65vw, 18px)/1.04 VT323, monospace;
+            overflow: hidden
         }
 
         .match-item .icon {
-            font-size: 25px
+            font-size: clamp(18px, 2.4vw, 25px);
+            flex: none
         }
 
         .match-item.selected {
-            outline: 4px solid var(--sun);
+            outline: 3px solid var(--sun);
             background: #fff0d0
         }
 
@@ -362,7 +377,7 @@
 
         .match-lines line {
             stroke: var(--ok);
-            stroke-width: 5;
+            stroke-width: 4;
             stroke-linecap: round;
             filter: drop-shadow(2px 2px rgba(75, 53, 41, .3));
             animation: draw .35s linear both
@@ -382,41 +397,61 @@
 
         @keyframes correct {
             50% {
-                transform: scale(1.04);
+                transform: scale(1.035);
                 filter: brightness(1.2)
             }
         }
 
-        /* Decisión */
+        .relation-bottom {
+            flex: none
+        }
+
+        .next {
+            text-align: right;
+            margin-top: clamp(5px, 1vh, 10px)
+        }
+
+        /* Decisión: tarjeta adaptable */
+        .decision-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 0
+        }
+
         .decision-card {
-            max-width: 720px;
-            width: 100%;
-            margin: auto
+            width: min(720px, 100%);
+            max-height: 100%;
+            overflow: hidden;
+            text-align: center
         }
 
         .scenario {
-            padding: 13px 15px;
+            padding: clamp(9px, 1.6vw, 14px);
             background: #f0ddba;
             border-left: 6px solid var(--brown);
-            font-size: 23px;
+            font-size: clamp(19px, 2.6vw, 24px);
             text-align: left;
-            line-height: 1.15
+            line-height: 1.1
         }
 
         .option-list {
             display: grid;
-            gap: 10px;
-            margin-top: 16px
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(7px, 1.2vw, 11px);
+            margin-top: clamp(9px, 1.8vh, 16px)
         }
 
         .decision-option {
-            padding: 13px 15px;
+            min-height: clamp(42px, 7vh, 58px);
+            padding: clamp(8px, 1.4vw, 13px);
             text-align: left;
             cursor: pointer;
             border: 3px solid var(--ink);
             background: #f5dfbc;
             box-shadow: 3px 3px var(--shadow);
-            font: 21px VT323, monospace;
+            font: clamp(17px, 2.3vw, 21px) VT323, monospace;
             transition: .1s
         }
 
@@ -447,7 +482,7 @@
             }
         }
 
-        /* Mapa */
+        /* Mapa: se conserva la estructura y las coordenadas originales */
         .search-wrap {
             height: 100%;
             display: flex;
@@ -458,7 +493,8 @@
             padding: 8px 10px;
             background: #f0ddba;
             border-left: 5px solid var(--brown);
-            font-size: 19px
+            font-size: 19px;
+            flex: none
         }
 
         .map-stage {
@@ -538,7 +574,7 @@
             position: absolute;
             transform: translate(-50%, -180%);
             background: var(--ok);
-            color: #fff8e9;
+            color: var(--cream);
             padding: 6px 8px;
             border: 3px solid var(--ink);
             font: 8px 'Press Start 2P', monospace;
@@ -569,7 +605,7 @@
             position: absolute;
             transform: translate(-50%, 35px);
             background: var(--ink);
-            color: #fff8e9;
+            color: var(--cream);
             padding: 5px 7px;
             border: 2px solid var(--cream);
             font: 8px 'Press Start 2P', monospace;
@@ -603,16 +639,6 @@
             text-align: center
         }
 
-        .score {
-            position: fixed;
-            z-index: 20;
-            pointer-events: none;
-            color: var(--ok);
-            text-shadow: 2px 2px var(--cream);
-            font: 16px 'Press Start 2P', monospace;
-            animation: scoreUp 1s forwards
-        }
-
         @media(max-width:680px) {
             .top {
                 font-size: 8px;
@@ -640,17 +666,28 @@
             }
 
             .match-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 7%
+                gap: 5%
             }
 
             .match-item {
-                font-size: 13px;
-                min-height: 48px;
-                padding: 7px
+                font-size: clamp(12px, 3.2vw, 15px);
+                padding: 5px
             }
 
             .match-item .icon {
+                font-size: 19px
+            }
+
+            .option-list {
+                grid-template-columns: 1fr
+            }
+
+            .decision-option {
+                min-height: 40px;
+                padding: 8px 10px
+            }
+
+            .scenario {
                 font-size: 20px
             }
 
@@ -669,13 +706,49 @@
                 padding: 8px
             }
         }
+
+        @media(max-height:620px) and (min-width:681px) {
+            .box {
+                padding: 10px 20px
+            }
+
+            .match-instruction {
+                font-size: 16px
+            }
+
+            .match-item {
+                font-size: 14px
+            }
+
+            .feedback {
+                min-height: 32px;
+                padding: 5px;
+                font-size: 16px
+            }
+
+            .scenario {
+                font-size: 18px
+            }
+
+            .option-list {
+                margin-top: 7px
+            }
+
+            .decision-option {
+                min-height: 36px;
+                padding: 6px 9px
+            }
+
+            .gamecard {
+                min-height: 100px
+            }
+        }
     </style>
 </head>
 
 <body>
     <main class="game">
-        <header class="top"><span>OPERACIÓN CALLE LARGA</span><span id="status">NIVEL 3 · ALIADOS DE LA COMUNIDAD</span>
-        </header>
+        <header class="top"><span>OPERACIÓN CALLE LARGA</span><span>NIVEL 3 · ALIADOS DE LA COMUNIDAD</span></header>
         <section class="screen active" id="start">
             <div class="box center start-bg">
                 <div>MISIÓN 03</div>
@@ -696,24 +769,26 @@
         </section>
         <section class="screen" id="relation">
             <div class="box">
-                <div class="match-wrap">
+                <div class="relation-layout">
                     <h2>🧩 ¿QUIÉN PUEDE AYUDAR?</h2>
                     <p class="match-instruction">Relaciona cada problemática con la organización que puede apoyar a la
                         comunidad.</p>
                     <div class="match-board" id="matchBoard"><svg class="match-lines" id="matchLines"></svg>
                         <div class="match-grid">
-                            <div>
+                            <div class="match-column">
                                 <div class="col-title">PROBLEMÁTICA</div>
                                 <div class="match-col" id="problems"></div>
                             </div>
-                            <div>
+                            <div class="match-column">
                                 <div class="col-title">ORGANIZACIÓN ALIADA</div>
                                 <div class="match-col" id="organizations"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="feedback" id="relationFeedback">Selecciona una problemática y luego su aliado.</div>
-                    <div class="next"><button class="btn green" onclick="menu()">VOLVER AL MENÚ ▶</button></div>
+                    <div class="relation-bottom">
+                        <div class="feedback" id="relationFeedback">Selecciona una problemática y luego su aliado.</div>
+                        <div class="next"><button class="btn green" onclick="menu()">VOLVER AL MENÚ ▶</button></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -733,14 +808,16 @@
             </div>
         </section>
         <section class="screen" id="decision">
-            <div class="box center">
-                <div class="decision-card">
-                    <h2>🔐 RETO DE DECISIÓN</h2>
-                    <p class="scenario">La comunidad quiere organizar una jornada para identificar necesidades y buscar
-                        soluciones colectivas. ¿A quién acudirías primero para facilitar la organización de los
-                        habitantes?</p>
-                    <div class="option-list" id="decisionOptions"></div>
-                    <div class="feedback" id="decisionFeedback">Selecciona una opción.</div>
+            <div class="box">
+                <div class="decision-screen">
+                    <div class="decision-card">
+                        <h2>🔐 RETO DE DECISIÓN</h2>
+                        <p class="scenario">La comunidad quiere organizar una jornada para identificar necesidades y
+                            buscar soluciones colectivas. ¿A quién acudirías primero para facilitar la organización de
+                            los habitantes?</p>
+                        <div class="option-list" id="decisionOptions"></div>
+                        <div class="feedback" id="decisionFeedback">Selecciona una opción.</div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -748,17 +825,16 @@
     <script>
         const $ = id => document.getElementById(id); let completed = new Set(); function show(id) { document.querySelectorAll('.screen').forEach(x => x.classList.remove('active')); $(id).classList.add('active') }
         function menu() { const g = $('games'); g.innerHTML = '';[{ id: 'relation', icon: '🧩', name: 'RELACIONA ALIADOS' }, { id: 'map', icon: '🔎', name: 'ENCUENTRA ALIADOS' }, { id: 'decision', icon: '🔐', name: 'RETO DE DECISIÓN' }].forEach(x => { const b = document.createElement('button'); b.className = 'gamecard' + (completed.has(x.id) ? ' done' : ''); b.innerHTML = `<span class="gamecard-icon">${completed.has(x.id) ? '✅' : x.icon}</span>${x.name}<span class="gamecard-check">${completed.has(x.id) ? '✓ COMPLETADO' : 'JUGAR'}</span>`; b.onclick = () => { show(x.id); x.id === 'relation' ? initRelation() : x.id === 'map' ? initMap() : initDecision() }; g.appendChild(b) }); $('fill').style.width = completed.size / 3 * 100 + '%'; $('progress').textContent = `RETOS COMPLETADOS: ${completed.size}/3`; show('menu') }
-        const relations = [{ p: 'Niños con dificultades de acceso a educación', i: '🏫', a: 'Institución educativa' }, { p: 'Necesidad de organizar a los habitantes', i: '🏘️', a: 'Junta de Acción Comunal' }, { p: 'Consumo de sustancias psicoactivas entre jóvenes', i: '🏥', a: 'Centro de salud' }, { p: 'Acompañamiento espiritual y social', i: '⛪', a: 'Organización religiosa' }, { p: 'Gestión de recursos y programas públicos', i: '🏛️', a: 'Entidad gubernamental' }]; let selectedP = null, selectedA = null, correctRelations = 0;
-        function initRelation() { selectedP = selectedA = null; correctRelations = 0; $('matchLines').innerHTML = ''; $('relationFeedback').className = 'feedback'; $('relationFeedback').textContent = 'Selecciona una problemática y luego su aliado.'; $('problems').innerHTML = ''; $('organizations').innerHTML = ''; relations.forEach((r, i) => { const p = document.createElement('button'); p.className = 'match-item'; p.dataset.id = i; p.innerHTML = r.p; p.onclick = () => selectRelation('p', p); $('problems').appendChild(p) }); relations.slice().sort(() => Math.random() - .5).forEach((r, i) => { const a = document.createElement('button'); a.className = 'match-item'; a.dataset.id = relations.indexOf(r); a.innerHTML = `<span class="icon">${r.i}</span>${r.a}`; a.onclick = () => selectRelation('a', a); $('organizations').appendChild(a) }) }
+        const relations = [['Niños con dificultades de acceso a educación', '🏫', 'Institución educativa'], ['Necesidad de organizar a los habitantes', '🏘️', 'Junta de Acción Comunal'], ['Consumo de sustancias psicoactivas entre jóvenes', '🏥', 'Centro de salud'], ['Acompañamiento espiritual y social', '⛪', 'Organización religiosa'], ['Gestión de recursos y programas públicos', '🏛️', 'Entidad gubernamental']]; let selectedP = null, selectedA = null, correctRelations = 0;
+        function initRelation() { selectedP = selectedA = null; correctRelations = 0; $('matchLines').innerHTML = ''; $('relationFeedback').className = 'feedback'; $('relationFeedback').textContent = 'Selecciona una problemática y luego su aliado.'; $('problems').innerHTML = ''; $('organizations').innerHTML = ''; relations.forEach((r, i) => { const b = document.createElement('button'); b.className = 'match-item'; b.dataset.id = i; b.textContent = r[0]; b.onclick = () => selectRelation('p', b); $('problems').appendChild(b) }); relations.slice().sort(() => Math.random() - .5).forEach(r => { const b = document.createElement('button'); b.className = 'match-item'; b.dataset.id = relations.indexOf(r); b.innerHTML = `<span class="icon">${r[1]}</span>${r[2]}`; b.onclick = () => selectRelation('a', b); $('organizations').appendChild(b) }) }
         function selectRelation(type, b) { if (b.classList.contains('correct')) return; if (type === 'p') { document.querySelectorAll('#problems .match-item').forEach(x => x.classList.remove('selected')); selectedP = b } else { document.querySelectorAll('#organizations .match-item').forEach(x => x.classList.remove('selected')); selectedA = b } b.classList.add('selected'); if (selectedP && selectedA) { if (selectedP.dataset.id === selectedA.dataset.id) { selectedP.classList.remove('selected'); selectedA.classList.remove('selected'); selectedP.classList.add('correct'); selectedA.classList.add('correct'); drawRelationLine(selectedP, selectedA); correctRelations++; celebrate(selectedA); $('relationFeedback').className = 'feedback ok'; $('relationFeedback').textContent = `¡Relación correcta! ${correctRelations}/5.`; selectedP = selectedA = null; if (correctRelations === 5) { completed.add('relation'); $('relationFeedback').textContent = '🟢 Has relacionado correctamente las organizaciones aliadas.' } } else { $('relationFeedback').className = 'feedback bad'; $('relationFeedback').textContent = 'Esa organización no corresponde a la problemática seleccionada.'; selectedP.classList.remove('selected'); selectedA.classList.remove('selected'); selectedP = selectedA = null } } }
         function drawRelationLine(a, b) { const board = $('matchBoard'), svg = $('matchLines'), br = board.getBoundingClientRect(), ar = a.getBoundingClientRect(), cr = b.getBoundingClientRect(), l = document.createElementNS('http://www.w3.org/2000/svg', 'line'); l.setAttribute('x1', ar.right - br.left); l.setAttribute('y1', ar.top + ar.height / 2 - br.top); l.setAttribute('x2', cr.left - br.left); l.setAttribute('y2', cr.top + cr.height / 2 - br.top); svg.appendChild(l) }
         const spots = [{ icon: '🏫', name: 'Institución educativa', x: 83, y: 38 }, { icon: '🏘️', name: 'Junta de Acción Comunal', x: 48, y: 40 }, { icon: '🏥', name: 'Centro de salud', x: 87, y: 90 }, { icon: '⛪', name: 'Organización religiosa', x: 87, y: 20 }, { icon: '🏛️', name: 'Entidad gubernamental', x: 68, y: 12 }]; let found = 0;
         function initMap() { found = 0; $('mapOverlay').innerHTML = ''; $('mapFinal').innerHTML = ''; $('mapStatus').textContent = 'ALIADOS ENCONTRADOS: 0/5'; spots.forEach(s => { const b = document.createElement('button'); b.className = 'hidden-ally'; b.textContent = s.icon; b.title = s.name; b.style.left = s.x + '%'; b.style.top = s.y + '%'; b.onclick = () => findAlly(b, s); $('mapOverlay').appendChild(b) }) }
-        function findAlly(b, s) { if (b.classList.contains('found')) return; b.classList.add('found'); found++; const r = b.getBoundingClientRect(); floatingScore(r, '+100'); const badge = document.createElement('div'); badge.className = 'found-badge'; badge.textContent = '¡ALIADO ENCONTRADO!'; badge.style.left = b.style.left; badge.style.top = b.style.top; $('mapOverlay').appendChild(badge); const name = document.createElement('div'); name.className = 'found-name'; name.textContent = s.name; name.style.left = b.style.left; name.style.top = b.style.top; $('mapOverlay').appendChild(name); setTimeout(() => { badge.remove(); name.remove() }, 2600); $('mapStatus').textContent = `${s.icon} ${s.name} · ALIADOS ENCONTRADOS: ${found}/5`; if (found === 5) { completed.add('map'); setTimeout(() => { $('mapFinal').innerHTML = '<p style="color:#31562f">🟢 Has identificado los recursos organizativos que pueden participar en el trabajo comunitario.</p><button class="btn green" onclick="menu()">VOLVER AL MENÚ ▶</button>' }, 500) } }
-        function floatingScore(r, text) { const e = document.createElement('div'); e.className = 'score'; e.textContent = text; e.style.left = r.left + r.width / 2 + 'px'; e.style.top = r.top + 'px'; document.body.appendChild(e); setTimeout(() => e.remove(), 1100) }
+        function findAlly(b, s) { if (b.classList.contains('found')) return; b.classList.add('found'); found++; celebrate(b); const badge = document.createElement('div'); badge.className = 'found-badge'; badge.textContent = '¡ALIADO ENCONTRADO!'; badge.style.left = b.style.left; badge.style.top = b.style.top; $('mapOverlay').appendChild(badge); const name = document.createElement('div'); name.className = 'found-name'; name.textContent = s.name; name.style.left = b.style.left; name.style.top = b.style.top; $('mapOverlay').appendChild(name); setTimeout(() => { badge.remove(); name.remove() }, 2600); $('mapStatus').textContent = `${s.icon} ${s.name} · ALIADOS ENCONTRADOS: ${found}/5`; if (found === 5) { completed.add('map'); setTimeout(() => { $('mapFinal').innerHTML = '<p style="color:#31562f">🟢 Has identificado los recursos organizativos que pueden participar en el trabajo comunitario.</p><button class="btn green" onclick="menu()">VOLVER AL MENÚ ▶</button>' }, 500) } }
         function initDecision() { const h = $('decisionOptions'); h.innerHTML = ''; $('decisionFeedback').className = 'feedback'; $('decisionFeedback').textContent = 'Selecciona una opción.';['A. Taller de motos', 'B. Tienda de barrio', 'C. Junta de Acción Comunal', 'D. Carpintería'].forEach((t, i) => { const b = document.createElement('button'); b.className = 'decision-option'; b.textContent = t; b.onclick = () => chooseDecision(i, b); h.appendChild(b) }) }
-        function chooseDecision(i, b) { if (completed.has('decision')) return; if (i === 2) { b.classList.add('correct'); completed.add('decision'); floatingScore(b.getBoundingClientRect(), '+100'); $('decisionFeedback').className = 'feedback ok'; $('decisionFeedback').textContent = '¡DECISIÓN CORRECTA! Los aliados comunitarios permiten articular esfuerzos y facilitar la participación.'; setTimeout(() => { $('decisionFeedback').innerHTML += ' <br><button class="btn green" style="margin-top:9px" onclick="menu()">VOLVER AL MENÚ ▶</button>' }, 450) } else { b.classList.add('incorrect'); $('decisionFeedback').className = 'feedback bad'; $('decisionFeedback').textContent = 'Esta opción no facilita la organización comunitaria. Inténtalo nuevamente.'; setTimeout(() => b.classList.remove('incorrect'), 450) } }
-        function celebrate(el) { floatingScore(el.getBoundingClientRect(), '✓ CORRECTO') }
+        function chooseDecision(i, b) { if (completed.has('decision')) return; if (i === 2) { b.classList.add('correct'); completed.add('decision'); celebrate(b); $('decisionFeedback').className = 'feedback ok'; $('decisionFeedback').textContent = '¡DECISIÓN CORRECTA! Los aliados comunitarios permiten articular esfuerzos y facilitar la participación.'; setTimeout(() => { $('decisionFeedback').innerHTML += ' <br><button class="btn green" style="margin-top:9px" onclick="menu()">VOLVER AL MENÚ ▶</button>' }, 450) } else { b.classList.add('incorrect'); $('decisionFeedback').className = 'feedback bad'; $('decisionFeedback').textContent = 'Esta opción no facilita la organización comunitaria. Inténtalo nuevamente.'; setTimeout(() => b.classList.remove('incorrect'), 450) } }
+        function celebrate(el) { const r = el.getBoundingClientRect(), e = document.createElement('div'); e.className = 'effect'; e.textContent = '✓ CORRECTO'; e.style.left = r.left + r.width / 2 + 'px'; e.style.top = r.top + 'px'; document.body.appendChild(e); setTimeout(() => e.remove(), 1100) }
     </script>
 </body>
 
