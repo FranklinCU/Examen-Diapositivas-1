@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operacion Calle Larga - Nivel 4</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+:root {
+  --bg: #fff8f0;
+  --panel: #f5e6d3;
+  --panel-light: #fff0e0;
+  --brown: #c9a86c;
+  --brown-dark: #8b6f47;
+  --brown-accent: #e6c88a;
+  --green: #68ad68;
+  --red: #d66868;
+  --shadow: #b8956a;
+  --text: #4a3728;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'VT323', monospace;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(8px, 3vw, 16px);
+  user-select: none;
+}
+
+button { 
+  font-family: 'VT323', monospace;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  font-size: 20px;
+}
+
+.game-shell {
+  width: min(100%, 700px);
+  min-width: 0;
+  max-width: 700px;
+  background: var(--panel-light);
+  border: 6px solid var(--brown-dark);
+  box-shadow: 12px 12px 0 var(--shadow);
+  padding: clamp(10px, 4vw, 20px);
+  position: relative;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 4px solid var(--brown-dark);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.topbar > * { min-width: 0; overflow-wrap: anywhere; }
+
+.badge {
+  background: var(--brown-accent);
+  color: var(--text);
+  padding: 8px 12px;
+  border: 3px solid var(--brown-dark);
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+
+button, .pixel-title, .pixel-subtitle, .menu-title, .mission-heading,
+.mission-description, .mission-name, .agent-name, .counter, .feedback,
+.true-false-question, .success-card p {
+  overflow-wrap: anywhere;
+}
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+.start-card, .mission-card, .success-card {
+  background: var(--panel);
+  border: 5px solid var(--brown-dark);
+  padding: 20px 16px;
+  text-align: center;
+  box-shadow: 6px 6px 0 var(--shadow);
+}
+
+.start-card, .mission-card, .success-card { min-width: 0; }
+
+.pixel-title {
+  font-size: 32px;
+  line-height: 1.4;
+  margin: 12px 0 16px;
+  color: var(--brown-dark);
+}
+
+.pixel-subtitle {
+  font-size: 20px;
+  line-height: 1.6;
+  margin: 12px 0 24px;
+  color: var(--text);
+}
+
+.btn {
+  border: 4px solid var(--brown-dark);
+  background: var(--brown-accent);
+  color: var(--text);
+  padding: 12px 20px;
+  box-shadow: 5px 5px 0 var(--shadow);
+  transition: all 0.15s;
+  font-size: 20px;
+  margin: 6px;
+  position: relative;
+  max-width: 100%;
+  white-space: normal;
+}
+
+.btn:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--shadow); }
+.btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--shadow); }
+.btn.secondary { background: var(--panel); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.menu-title {
+  text-align: center;
+  font-size: 28px;
+  line-height: 1.4;
+  margin: 12px 0 24px;
+  color: var(--brown-dark);
+}
+
+.mission-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.mission-option {
+  min-height: 100px;
+  border: 4px solid var(--brown-dark);
+  background: white;
+  padding: 16px 12px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 5px 5px 0 var(--shadow);
+  transition: all 0.2s;
+  position: relative;
+}
+
+.mission-option:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 7px 7px 0 var(--shadow);
+  background: var(--brown-accent);
+}
+
+.mission-option.completed {
+  background: var(--green);
+  opacity: 0.7;
+}
+
+.mission-option.completed:hover {
+  opacity: 1;
+}
+
+.mission-icon { display: block; font-size: 48px; margin-bottom: 8px; }
+.mission-name { display: block; font-size: 20px; line-height: 1.4; }
+.mission-status { display: block; margin-top: 8px; font-size: 16px; color: var(--green); }
+
+.mission-card { text-align: left; }
+.mission-heading { text-align: center; font-size: 24px; line-height: 1.4; margin: 0 0 16px; color: var(--brown-dark); }
+.mission-description { font-size: 18px; line-height: 1.6; text-align: center; margin-bottom: 16px; }
+
+.agent-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.agent {
+  border: 3px solid var(--brown-dark);
+  background: white;
+  padding: 12px 8px;
+  min-height: 90px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 4px 4px 0 var(--shadow);
+  transition: all 0.15s;
+  position: relative;
+  min-width: 0;
+}
+
+.agent:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--shadow);
+}
+
+.agent.selected {
+  background: var(--brown-accent);
+  transform: scale(1.02);
+  box-shadow: 6px 6px 0 var(--shadow), inset 0 0 0 2px var(--brown-dark);
+}
+
+.agent.correct {
+  background: var(--green);
+  animation: correctPulse 0.5s;
+}
+
+.agent.wrong {
+  background: var(--red);
+  animation: shake 0.4s;
+}
+
+@keyframes correctPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1.02); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.agent-icon { display: block; font-size: 38px; margin-bottom: 8px; }
+.agent-name { font-size: 16px; line-height: 1.4; }
+
+.popup {
+  position: absolute;
+  background: var(--green);
+  color: white;
+  padding: 8px 12px;
+  border: 3px solid var(--brown-dark);
+  box-shadow: 4px 4px 0 var(--shadow);
+  font-size: 18px;
+  z-index: 100;
+  pointer-events: none;
+  animation: popupFade 1s forwards;
+  max-width: calc(100% - 16px);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.popup.wrong {
+  background: var(--red);
+}
+
+@keyframes popupFade {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-30px); }
+}
+
+.counter, .feedback {
+  padding: 10px;
+  margin: 12px 0;
+  border: 3px solid var(--brown-dark);
+  font-size: 18px;
+  line-height: 1.6;
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+
+.feedback { display: none; }
+.feedback.show { display: block; }
+.feedback.ok { background: #d8f0d8; border-color: var(--green); color: #2d5d2d; }
+
+.actions { text-align: center; margin-top: 16px; }
+
+.success-card h2 { color: var(--green); font-size: 32px; line-height: 1.4; margin-bottom: 16px; }
+.success-card p { font-size: 18px; line-height: 1.6; margin: 8px 0; }
+.secret { display: inline-block; margin: 16px 0; background: var(--brown-dark); color: var(--panel-light); padding: 12px 18px; border: 3px solid var(--brown); letter-spacing: 3px; box-shadow: 5px 5px 0 var(--shadow); font-size: 20px; }
+
+.progress-container {
+  margin: 12px 0;
+  padding: 8px;
+  background: var(--panel);
+  border: 3px solid var(--brown-dark);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 16px;
+  background: white;
+  border: 3px solid var(--brown-dark);
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--green);
+  width: 0%;
+  transition: width 0.3s;
+}
+
+.true-false-container {
+  margin: 20px 0;
+}
+
+.true-false-question {
+  font-size: 20px;
+  line-height: 1.6;
+  margin: 16px 0;
+  padding: 16px;
+  background: white;
+  border: 3px solid var(--brown-dark);
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
+.tf-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  body { align-items: flex-start; }
+  .game-shell { border-width: 4px; box-shadow: 6px 6px 0 var(--shadow); }
+  .topbar { gap: 8px; padding-bottom: 10px; margin-bottom: 12px; }
+  .badge { padding: 6px 8px; box-shadow: 2px 2px 0 var(--shadow); }
+  .start-card, .mission-card, .success-card { border-width: 4px; padding: 14px 10px; box-shadow: 4px 4px 0 var(--shadow); }
+  .agent-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .agent { min-height: 80px; padding: 10px 6px; }
+  .agent-icon { font-size: 32px; }
+  .agent-name { font-size: 14px; }
+  .pixel-title { font-size: 26px; }
+  .btn { padding: 10px 14px; font-size: 18px; }
+}
+
+@media (max-width: 340px) {
+  .topbar { flex-direction: column; align-items: stretch; font-size: 16px; }
+  .badge { align-self: flex-start; }
+  .pixel-title, .success-card h2 { font-size: 24px; }
+  .mission-heading, .menu-title { font-size: 22px; }
+  .pixel-subtitle, .mission-description, .true-false-question { font-size: 18px; }
+  .agent-grid { grid-template-columns: 1fr; }
+  .tf-buttons { display: grid; grid-template-columns: 1fr; }
+  .tf-buttons .btn, .actions .btn { width: 100%; margin: 6px 0; }
+}
+</style>
+</head>
+<body>
+<main class="game-shell">
+  <header class="topbar">
+    <span>🎮 OPERACION CALLE LARGA</span>
+    <span class="badge">NIVEL 04</span>
+  </header>
+
+  <section id="startScreen" class="screen active">
+    <div class="start-card">
+      <div style="font-size: 48px; margin: 16px 0;">👥</div>
+      <h1 class="pixel-title">QUIEN PUEDE AYUDAR?</h1>
+      <p class="pixel-subtitle">Forma el equipo adecuado para cada mision comunitaria.</p>
+      <button class="btn" id="startButton">INICIAR NIVEL</button>
+    </div>
+  </section>
+
+  <section id="missionMenu" class="screen">
+    <div class="mission-card">
+      <h1 class="menu-title">SELECCIONA UNA MISION</h1>
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <p style="font-size: 16px; margin-top: 6px;">PROGRESO: <span id="progressText">0</span>/4</p>
+      </div>
+      <div class="mission-grid">
+        <button class="mission-option" data-mission="water" id="btnWater">
+          <span class="mission-icon">💧</span>
+          <span class="mission-name">AGUA Y SANEAMIENTO</span>
+          <span class="mission-status" id="statusWater">▶ JUGAR</span>
+        </button>
+        <button class="mission-option" data-mission="education" id="btnEducation">
+          <span class="mission-icon">📚</span>
+          <span class="mission-name">NIÑOS Y EDUCACION</span>
+          <span class="mission-status" id="statusEducation">▶ JUGAR</span>
+        </button>
+        <button class="mission-option" data-mission="youth" id="btnYouth">
+          <span class="mission-icon">👥</span>
+          <span class="mission-name">ESTRATEGIA PARA JOVENES</span>
+          <span class="mission-status" id="statusYouth">▶ JUGAR</span>
+        </button>
+        <button class="mission-option" data-mission="final" id="btnFinal">
+          <span class="mission-icon">🧠</span>
+          <span class="mission-name">RETO FINAL</span>
+          <span class="mission-status" id="statusFinal">▶ JUGAR</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section id="gameScreen" class="screen">
+    <div class="mission-card">
+      <h2 id="missionTitle" class="mission-heading"></h2>
+      <p id="missionDescription" class="mission-description"></p>
+      <p class="mission-description" style="font-size: 16px;">Selecciona todos los agentes que deben participar.</p>
+      <div id="agentGrid" class="agent-grid"></div>
+      <div class="counter">AGENTES SELECCIONADOS: <span id="selectedCount">0</span> / <span id="requiredCount">0</span></div>
+      <div id="feedback" class="feedback"></div>
+      <div class="actions">
+        <button class="btn secondary" id="backButton">VOLVER</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="finalScreen" class="screen">
+    <div class="mission-card">
+      <h2 class="mission-heading">RETO FINAL</h2>
+      <p class="mission-description">Responde la pregunta para completar el nivel.</p>
+      <div class="true-false-container">
+        <div class="true-false-question">
+          "El trabajo comunitario es responsabilidad exclusiva de los profesionales de salud."
+        </div>
+        <div class="tf-buttons">
+          <button class="btn" onclick="verificarVerdaderoFalso(false, event)">VERDADERO</button>
+          <button class="btn" onclick="verificarVerdaderoFalso(true, event)">FALSO</button>
+        </div>
+        <div id="feedbackFinal" class="feedback"></div>
+      </div>
+      <button class="btn secondary" id="backFinal">VOLVER</button>
+    </div>
+  </section>
+
+  <section id="successScreen" class="screen">
+    <div class="success-card">
+      <h2>🎉 NIVEL SUPERADO</h2>
+      <p>Has formado los equipos adecuados para las misiones comunitarias.</p>
+      <div class="secret">CODIGO: EQUIPO</div>
+      <p>El trabajo comunitario requiere participacion y colaboracion.</p>
+      <button class="btn" id="menuButton">MENU DE MISIONES</button>
+    </div>
+  </section>
+</main>
+
+<script>
+const missions = {
+  water: {
+    title: 'MISION A — AGUA Y SANEAMIENTO',
+    description: 'La comunidad necesita trabajar sobre los problemas relacionados con agua, higiene y saneamiento.',
+    correct: ['Enfermera', 'Bacteriologo', 'Funcionario de salud', 'Lider comunitario', 'Habitantes'],
+    agents: [
+      ['👩‍⚕️', 'Enfermera'], ['👨‍🏫', 'Docente'], ['🏘️', 'Lider comunitario'],
+      ['🧑‍🔬', 'Bacteriologo'], ['🎓', 'Estudiante'], ['👨‍💼', 'Funcionario de salud'],
+      ['👨‍👩‍👧', 'Habitantes'], ['🔧', 'Taller de motos']
+    ],
+    btnId: 'btnWater',
+    statusId: 'statusWater',
+    key: 'water'
+  },
+  education: {
+    title: 'MISION B — NIÑOS Y EDUCACION',
+    description: 'Se quiere promover la permanencia de los niños en el sistema educativo.',
+    correct: ['Docente', 'Estudiante', 'Lider comunitario', 'Habitantes'],
+    agents: [
+      ['👩‍⚕️', 'Enfermera'], ['👨‍🏫', 'Docente'], ['🏘️', 'Lider comunitario'],
+      ['🧑‍🔬', 'Bacteriologo'], ['🎓', 'Estudiante'], ['👨‍💼', 'Funcionario de salud'],
+      ['👨‍👩‍👧', 'Habitantes'], ['⛪', 'Organizacion religiosa']
+    ],
+    btnId: 'btnEducation',
+    statusId: 'statusEducation',
+    key: 'education'
+  },
+  youth: {
+    title: 'MISION C — ESTRATEGIA PARA JOVENES',
+    description: 'Se quiere desarrollar una estrategia comunitaria dirigida a los jovenes.',
+    correct: ['Grupo juvenil', 'Lider comunitario', 'Profesional de salud', 'Estudiantes', 'Habitantes'],
+    agents: [
+      ['👥', 'Grupo juvenil'], ['🏘️', 'Lider comunitario'], ['👨‍⚕️', 'Profesional de salud'],
+      ['🎓', 'Estudiantes'], ['👨‍👩‍👧', 'Habitantes'], ['👨‍🏫', 'Docente'],
+      ['🧑‍🔬', 'Bacteriologo'], ['🏪', 'Tienda de barrio']
+    ],
+    btnId: 'btnYouth',
+    statusId: 'statusYouth',
+    key: 'youth'
+  }
+};
+
+const startScreen = document.getElementById('startScreen');
+const missionMenu = document.getElementById('missionMenu');
+const gameScreen = document.getElementById('gameScreen');
+const finalScreen = document.getElementById('finalScreen');
+const successScreen = document.getElementById('successScreen');
+const agentGrid = document.getElementById('agentGrid');
+const feedback = document.getElementById('feedback');
+const feedbackFinal = document.getElementById('feedbackFinal');
+const progressFill = document.getElementById('progressFill');
+const progressText = document.getElementById('progressText');
+let currentMission = null;
+let completed = new Set();
+let finalCompleted = false;
+let missionCompleted = false;
+
+function showScreen(screen) {
+  document.querySelectorAll('.screen').forEach(item => item.classList.remove('active'));
+  screen.classList.add('active');
+}
+
+function createPopup(text, x, y, isWrong = false) {
+  const popup = document.createElement('div');
+  popup.className = 'popup' + (isWrong ? ' wrong' : '');
+  popup.textContent = text;
+  const shell = document.querySelector('.game-shell');
+  shell.appendChild(popup);
+
+  // Mantiene el mensaje dentro del contenedor aunque se pulse cerca del borde.
+  const padding = 8;
+  const left = Math.max(padding, Math.min(x - popup.offsetWidth / 2, shell.clientWidth - popup.offsetWidth - padding));
+  popup.style.left = left + 'px';
+  popup.style.top = Math.max(padding, y) + 'px';
+  
+  setTimeout(() => popup.remove(), 1000);
+}
+
+function updateCounter() {
+  document.getElementById('selectedCount').textContent = agentGrid.querySelectorAll('.agent.selected').length;
+  verificarSeleccionAutomatica();
+}
+
+function verificarSeleccionAutomatica() {
+  if (!currentMission || missionCompleted) return;
+  
+  const selected = [...agentGrid.querySelectorAll('.agent.selected')].map(item => item.dataset.name);
+  const correct = currentMission.correct;
+  
+  const todosCorrectos = correct.every(name => selected.includes(name));
+  const soloCorrectos = selected.every(name => correct.includes(name));
+  const cantidadCorrecta = selected.length === correct.length;
+  
+  if (todosCorrectos && soloCorrectos && cantidadCorrecta) {
+    agentGrid.querySelectorAll('.agent.selected').forEach(agent => {
+      agent.classList.add('correct');
+    });
+    
+    missionCompleted = true;
+    completed.add(currentMission.key);
+    updateProgress();
+    feedback.className = 'feedback show ok';
+    feedback.innerHTML = '✅ EQUIPO CORRECTO!<br><br>Los agentes seleccionados pueden participar en esta mision.';
+    
+    document.getElementById(currentMission.btnId).classList.add('completed');
+    document.getElementById(currentMission.statusId).textContent = '✓ COMPLETADO';
+    
+    setTimeout(() => {
+      if (completed.size === 3) {
+        showScreen(finalScreen);
+      } else {
+        showScreen(missionMenu);
+      }
+    }, 1500);
+  }
+}
+
+function updateProgress() {
+  const total = 4;
+  const count = completed.size + (finalCompleted ? 1 : 0);
+  const percent = (count / total) * 100;
+  progressFill.style.width = percent + '%';
+  progressText.textContent = count;
+}
+
+function loadMission(key) {
+  currentMission = missions[key];
+  missionCompleted = false;
+  document.getElementById('missionTitle').textContent = currentMission.title;
+  document.getElementById('missionDescription').textContent = currentMission.description;
+  document.getElementById('requiredCount').textContent = currentMission.correct.length;
+  feedback.className = 'feedback';
+  feedback.textContent = '';
+  agentGrid.innerHTML = '';
+
+  currentMission.agents.forEach(([icon, name]) => {
+    const button = document.createElement('button');
+    button.className = 'agent';
+    button.dataset.name = name;
+    button.innerHTML = `<span class="agent-icon">${icon}</span><span class="agent-name">${name}</span>`;
+    button.addEventListener('click', (e) => {
+      const isCorrect = currentMission.correct.includes(name);
+      const rect = button.getBoundingClientRect();
+      const gameRect = document.querySelector('.game-shell').getBoundingClientRect();
+      const x = rect.left - gameRect.left + rect.width / 2;
+      const y = rect.top - gameRect.top;
+      
+      if (isCorrect) {
+        button.classList.toggle('selected');
+        if (button.classList.contains('selected')) {
+          button.classList.add('correct');
+          createPopup('✅ BIEN!', x, y);
+          setTimeout(() => button.classList.remove('correct'), 500);
+        } else {
+          createPopup('❌ MAL!', x, y, true);
+        }
+      } else {
+        button.classList.add('wrong');
+        createPopup('❌ NO!', x, y, true);
+        setTimeout(() => {
+          button.classList.remove('wrong');
+          button.classList.remove('selected');
+        }, 400);
+        return;
+      }
+      
+      updateCounter();
+    });
+    agentGrid.appendChild(button);
+  });
+
+  updateCounter();
+  showScreen(gameScreen);
+}
+
+function verificarVerdaderoFalso(esFalso, event) {
+  const rect = event.target.getBoundingClientRect();
+  const gameRect = document.querySelector('.game-shell').getBoundingClientRect();
+  const x = rect.left - gameRect.left + rect.width / 2;
+  const y = rect.top - gameRect.top;
+  
+  if (esFalso) {
+    createPopup('✅ CORRECTO!', x, y);
+    feedbackFinal.className = 'feedback show ok';
+    feedbackFinal.innerHTML = '✅ CORRECTO!<br><br>El trabajo comunitario requiere participacion, articulacion y colaboracion entre diferentes actores de la comunidad y profesionales.';
+    finalCompleted = true;
+    updateProgress();
+    setTimeout(() => {
+      showScreen(successScreen);
+    }, 2000);
+  } else {
+    createPopup('❌ INCORRECTO!', x, y, true);
+    feedbackFinal.className = 'feedback show bad';
+    feedbackFinal.innerHTML = '❌ INCORRECTO<br><br>El trabajo comunitario NO es responsabilidad exclusiva de los profesionales de salud. Requiere la participacion activa de toda la comunidad.';
+  }
+}
+
+document.getElementById('startButton').addEventListener('click', () => showScreen(missionMenu));
+
+document.querySelectorAll('.mission-option').forEach(option => {
+  option.addEventListener('click', () => {
+    if (option.dataset.mission === 'final') {
+      if (completed.size === 3) {
+        showScreen(finalScreen);
+      } else {
+        alert('Completa las 3 misiones primero!');
+      }
+    } else {
+      loadMission(option.dataset.mission);
+    }
+  });
+});
+
+document.getElementById('backButton').addEventListener('click', () => showScreen(missionMenu));
+document.getElementById('backFinal').addEventListener('click', () => showScreen(missionMenu));
+document.getElementById('menuButton').addEventListener('click', () => showScreen(missionMenu));
+</script>
+</body>
+</html>
