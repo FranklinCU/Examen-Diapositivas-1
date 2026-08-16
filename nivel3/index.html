@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Operación Calle Larga — Nivel 3</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+        :root {
+            --ink: #4b3529;
+            --cream: #fff8e9;
+            --sand: #e7c49d;
+            --brown: #96614b;
+            --moss: #80906c;
+            --ok: #74a16d;
+            --okLight: #d9edc8;
+            --bad: #b8645d;
+            --sun: #e8bf69;
+            --shadow: #8a5d48
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden
+        }
+
+        body {
+            font: 21px VT323, monospace;
+            background: var(--sand);
+            color: var(--ink)
+        }
+
+        .game {
+            height: 100dvh;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            background: repeating-linear-gradient(90deg, #e7c49d 0 14px, #eacaa5 14px 16px)
+        }
+
+        .top {
+            flex: none;
+            background: var(--ink);
+            color: #fff8e9;
+            padding: 13px 16px;
+            display: flex;
+            justify-content: space-between;
+            font: 10px 'Press Start 2P', monospace
+        }
+
+        .top span:last-child {
+            color: #f5d987
+        }
+
+        .screen {
+            display: none;
+            flex: 1;
+            min-height: 0
+        }
+
+        .screen.active {
+            display: flex;
+            animation: enter .25s steps(3, end)
+        }
+
+        @keyframes enter {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .box {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            border: 4px solid var(--ink);
+            background: var(--cream);
+            box-shadow: 6px 6px 0 var(--shadow);
+            padding: clamp(16px, 3vw, 36px);
+            position: relative
+        }
+
+        h1,
+        h2 {
+            font-family: 'Press Start 2P', monospace;
+            line-height: 1.45;
+            color: var(--brown);
+            margin: .3em 0
+        }
+
+        h1 {
+            font-size: clamp(18px, 3vw, 30px)
+        }
+
+        h2 {
+            font-size: clamp(13px, 1.9vw, 19px)
+        }
+
+        p {
+            line-height: 1.15;
+            margin: .5em 0
+        }
+
+        .center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%
+        }
+
+        .btn {
+            cursor: pointer;
+            border: 3px solid var(--ink);
+            box-shadow: 4px 4px 0 var(--shadow);
+            background: var(--brown);
+            color: #fff8e9;
+            font: 11px 'Press Start 2P', monospace;
+            padding: 13px 16px;
+            transition: transform .08s, filter .12s
+        }
+
+        .btn:hover {
+            filter: brightness(.92);
+            outline: 3px solid var(--sun);
+            outline-offset: 3px
+        }
+
+        .btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: none
+        }
+
+        .btn.green {
+            background: var(--moss)
+        }
+
+        .start-bg {
+            background-image: linear-gradient(rgba(75, 53, 41, .32), rgba(75, 53, 41, .55)), url('imagen1.jpeg');
+            background-size: cover;
+            background-position: center;
+            color: #fff8e9
+        }
+
+        .start-bg h1 {
+            color: #ffe9b8;
+            text-shadow: 3px 3px 0 #4b3529
+        }
+
+        .gamesgrid {
+            width: min(760px, 100%);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(12px, 2.5vw, 22px);
+            margin: clamp(16px, 3.5vh, 28px) 0
+        }
+
+        .gamecard {
+            min-height: 160px;
+            padding: 16px 10px;
+            cursor: pointer;
+            background: #f9e7c8;
+            border: 4px solid var(--ink);
+            box-shadow: 5px 5px 0 var(--shadow);
+            font: 10px/1.7 'Press Start 2P', monospace;
+            transition: .12s
+        }
+
+        .gamecard:hover {
+            transform: translateY(-5px);
+            background: #fff3d8
+        }
+
+        .gamecard-icon {
+            display: block;
+            font-size: 46px;
+            margin-bottom: 10px
+        }
+
+        .gamecard.done {
+            background: var(--okLight);
+            border-color: var(--ok)
+        }
+
+        .gamecard-check {
+            display: block;
+            color: #31562f;
+            font-size: 8px
+        }
+
+        .bar {
+            width: min(600px, 90%);
+            height: 18px;
+            border: 3px solid var(--ink);
+            background: #f5dfbd
+        }
+
+        .fill {
+            height: 100%;
+            background: var(--ok);
+            width: 0%;
+            transition: width .35s
+        }
+
+        .search-wrap {
+            height: 100%;
+            display: flex;
+            flex-direction: column
+        }
+
+        .instruction {
+            padding: 8px 10px;
+            background: #f0ddba;
+            border-left: 5px solid var(--brown);
+            font-size: 19px;
+            flex: none
+        }
+
+        .map-stage {
+            position: relative;
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            overflow: hidden;
+            border: 4px solid var(--ink);
+            background: #cbb890;
+            box-shadow: 5px 5px 0 var(--shadow)
+        }
+
+        .map-frame {
+            position: relative;
+            width: min(100%, calc(100vh - 170px));
+            height: min(100%, calc(100vh - 210px));
+            max-width: 100%;
+            max-height: 100%;
+            aspect-ratio: 1/1;
+            line-height: 0
+        }
+
+        .map-frame img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center
+        }
+
+        .map-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none
+        }
+
+        .hidden-ally {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            background: rgba(255, 248, 233, .94);
+            border: 3px solid var(--ink);
+            border-radius: 50%;
+            box-shadow: 3px 3px 0 rgba(75, 53, 41, .55);
+            animation: blink 1.6s ease-in-out infinite;
+            transform: translate(-50%, -50%);
+            pointer-events: auto;
+            z-index: 3
+        }
+
+        .hidden-ally:hover {
+            transform: translate(-50%, -50%) scale(1.1)
+        }
+
+        .hidden-ally.found {
+            animation: foundPulse .5s steps(2, end);
+            background: var(--okLight);
+            border-color: var(--ok);
+            opacity: .78
+        }
+
+        @keyframes blink {
+            50% {
+                filter: brightness(1.3)
+            }
+        }
+
+        @keyframes foundPulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1)
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.25)
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1)
+            }
+        }
+
+        .found-badge {
+            position: absolute;
+            transform: translate(-50%, -180%);
+            background: var(--ok);
+            color: #fff8e9;
+            padding: 6px 8px;
+            border: 3px solid var(--ink);
+            font: 8px 'Press Start 2P', monospace;
+            white-space: nowrap;
+            animation: popText 1.2s ease-out forwards;
+            pointer-events: none;
+            z-index: 6
+        }
+
+        .found-name {
+            position: absolute;
+            transform: translate(-50%, 35px);
+            background: var(--ink);
+            color: #fff8e9;
+            padding: 5px 7px;
+            border: 2px solid var(--cream);
+            font: 8px 'Press Start 2P', monospace;
+            white-space: nowrap;
+            z-index: 5;
+            animation: nameIn .4s steps(2, end) forwards;
+            pointer-events: none
+        }
+
+        @keyframes popText {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -120%) scale(.6)
+            }
+
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -180%) scale(1.05)
+            }
+
+            70% {
+                opacity: 1
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -220%) scale(1)
+            }
+        }
+
+        @keyframes nameIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 20px) scale(.8)
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, 35px) scale(1)
+            }
+        }
+
+        .map-status {
+            text-align: center;
+            margin-top: 10px;
+            font: 11px 'Press Start 2P', monospace;
+            color: var(--brown);
+            flex: none;
+            min-height: 28px
+        }
+
+        .score-pop {
+            position: fixed;
+            z-index: 20;
+            pointer-events: none;
+            color: var(--ok);
+            text-shadow: 2px 2px var(--cream);
+            font: 16px 'Press Start 2P', monospace;
+            animation: scoreUp 1s steps(4, end) forwards
+        }
+
+        @keyframes scoreUp {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, 0) scale(.6)
+            }
+
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -10px) scale(1.1)
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -85px) scale(1)
+            }
+        }
+
+        .final-message {
+            font-size: 19px;
+            color: #31562f;
+            animation: enter .35s steps(3, end)
+        }
+
+        .options {
+            display: grid;
+            gap: 10px
+        }
+
+        .option {
+            cursor: pointer;
+            text-align: left;
+            padding: 12px 14px;
+            border: 3px solid var(--ink);
+            background: #f5dfbc;
+            box-shadow: 3px 3px var(--shadow);
+            font: 19px VT323, monospace
+        }
+
+        .option.ok {
+            background: var(--okLight);
+            border-color: var(--ok)
+        }
+
+        .option.bad {
+            background: #f0c8bf;
+            border-color: var(--bad)
+        }
+
+        .feedback {
+            min-height: 44px;
+            margin-top: 12px;
+            padding: 8px;
+            border: 3px dashed var(--brown);
+            background: #f8edcf;
+            font-size: 19px
+        }
+
+        .feedback.ok {
+            background: var(--okLight);
+            border-color: var(--ok);
+            color: #31562f
+        }
+
+        .feedback.bad {
+            background: #f0c8bf;
+            border-color: var(--bad);
+            color: #7a322d
+        }
+
+        @media(max-width:680px) {
+            .top {
+                font-size: 8px;
+                flex-direction: column;
+                gap: 6px
+            }
+
+            .gamesgrid {
+                grid-template-columns: 1fr;
+                gap: 10px
+            }
+
+            .gamecard {
+                min-height: 100px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                text-align: left;
+                padding: 12px
+            }
+
+            .gamecard-icon {
+                margin: 0;
+                font-size: 34px
+            }
+
+            .map-frame {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 1/1
+            }
+
+            .hidden-ally {
+                width: 40px;
+                height: 40px;
+                font-size: 21px
+            }
+
+            .game {
+                padding: 8px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="game">
+        <header class="top"><span>OPERACIÓN CALLE LARGA</span><span id="status">NIVEL 3 · ALIADOS DE LA COMUNIDAD</span>
+        </header>
+        <section class="screen active" id="start">
+            <div class="box center start-bg">
+                <div>MISIÓN 03</div>
+                <h1>ENCUENTRA A LOS ALIADOS</h1>
+                <p>Identifica las organizaciones que pueden convertirse en aliados de Calle Larga.</p><button
+                    class="btn" onclick="menu()">▶ COMENZAR</button>
+            </div>
+        </section>
+        <section class="screen" id="menu">
+            <div class="box center">
+                <h1>🤝 MINIJUEGOS DISPONIBLES</h1>
+                <div class="gamesgrid" id="gamesgrid"></div>
+                <div class="bar">
+                    <div class="fill" id="fill"></div>
+                </div>
+                <p id="prog">RETOS COMPLETADOS: 0/3</p>
+            </div>
+        </section>
+        <section class="screen" id="game1">
+            <div class="box center">
+                <h2>🧩 RELACIONA ALIADOS</h2>
+                <p>Este reto se mantiene disponible desde el menú de minijuegos.</p><button class="btn green"
+                    onclick="menu()">VOLVER AL MENÚ ▶</button>
+            </div>
+        </section>
+        <section class="screen" id="game2">
+            <div class="box">
+                <div class="search-wrap">
+                    <p class="instruction">Encuentra los 5 aliados en el mapa. Haz clic sobre cada ícono.</p>
+                    <div class="map-stage">
+                        <div class="map-frame"><img src="imagen2.jpeg" alt="Mapa completo de Calle Larga">
+                            <div class="map-overlay" id="mapOverlay"></div>
+                        </div>
+                    </div>
+                    <div class="map-status" id="mapStatus">ALIADOS ENCONTRADOS: 0/5</div>
+                    <div id="mapFinal"></div>
+                </div>
+            </div>
+        </section>
+        <section class="screen" id="game3">
+            <div class="box center">
+                <h2>🔐 RETO DE DECISIÓN</h2>
+                <p>Selecciona la Junta de Acción Comunal para completar el reto.</p>
+                <div class="options" id="options"></div>
+                <div class="feedback" id="feedback">Selecciona una opción.</div>
+            </div>
+        </section>
+    </main>
+    <script>
+        const $ = id => document.getElementById(id); let done = new Set(); function show(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); $(id).classList.add('active') } function menu() { let g = $('gamesgrid'); g.innerHTML = '';[{ id: 1, i: '🧩', n: 'RELACIONA ALIADOS' }, { id: 2, i: '🔎', n: 'ENCUENTRA ALIADOS' }, { id: 3, i: '🔐', n: 'RETO DE DECISIÓN' }].forEach(x => { let b = document.createElement('button'); b.className = 'gamecard' + (done.has(x.id) ? ' done' : ''); b.innerHTML = `<span class="gamecard-icon">${done.has(x.id) ? '✅' : x.i}</span>${x.n}<span class="gamecard-check">${done.has(x.id) ? '✓ COMPLETADO' : 'JUGAR'}</span>`; b.onclick = () => open(x.id); g.appendChild(b) }); $('fill').style.width = done.size / 3 * 100 + '%'; $('prog').textContent = `RETOS COMPLETADOS: ${done.size}/3`; show('menu') } function open(id) { if (id === 2) { show('game2'); initMap() } else if (id === 1) { show('game1') } else { show('game3'); initDecision() } }
+        const spots = [{ icon: '🏫', name: 'Institución educativa', x: 83, y: 38 }, { icon: '🏘️', name: 'Junta de Acción Comunal', x: 48, y: 40 }, { icon: '🏥', name: 'Centro de salud', x: 87, y: 90 }, { icon: '⛪', name: 'Organización religiosa', x: 87, y: 20 }, { icon: '🏛️', name: 'Entidad gubernamental', x: 68, y: 12 }]; let found = 0; function initMap() { found = 0; $('mapOverlay').innerHTML = ''; $('mapFinal').innerHTML = ''; $('mapStatus').textContent = 'ALIADOS ENCONTRADOS: 0/5'; spots.forEach((s, i) => { let b = document.createElement('button'); b.className = 'hidden-ally'; b.textContent = s.icon; b.title = s.name; b.style.left = s.x + '%'; b.style.top = s.y + '%'; b.style.animationDelay = i * .12 + 's'; b.onclick = () => find(b, s); $('mapOverlay').appendChild(b) }) } function find(b, s) { if (b.classList.contains('found')) return; b.classList.add('found'); found++; let r = b.getBoundingClientRect(); let score = document.createElement('div'); score.className = 'score-pop'; score.textContent = '+100'; score.style.left = r.left + r.width / 2 + 'px'; score.style.top = r.top + 'px'; document.body.appendChild(score); setTimeout(() => score.remove(), 1100); let badge = document.createElement('div'); badge.className = 'found-badge'; badge.textContent = '¡ALIADO ENCONTRADO!'; badge.style.left = b.style.left; badge.style.top = b.style.top; $('mapOverlay').appendChild(badge); setTimeout(() => badge.remove(), 1200); let name = document.createElement('div'); name.className = 'found-name'; name.textContent = s.name; name.style.left = b.style.left; name.style.top = b.style.top; $('mapOverlay').appendChild(name); setTimeout(() => name.remove(), 2600); $('mapStatus').textContent = `${s.icon} ${s.name} · ALIADOS ENCONTRADOS: ${found}/5`; if (found === 5) { done.add(2); setTimeout(() => { $('mapFinal').innerHTML = '<p class="final-message">🟢 Has identificado los recursos organizativos que pueden participar en el trabajo comunitario.</p><button class="btn green" onclick="menu()">VOLVER AL MENÚ ▶</button>' }, 500) } } function initDecision() { let h = $('options'); h.innerHTML = ''; $('feedback').className = 'feedback'; $('feedback').textContent = 'Selecciona una opción.';['A. Taller de motos', 'B. Tienda de barrio', 'C. Junta de Acción Comunal', 'D. Carpintería'].forEach((t, i) => { let b = document.createElement('button'); b.className = 'option'; b.textContent = t; b.onclick = () => { if (i === 2) { b.classList.add('ok'); done.add(3); $('feedback').className = 'feedback ok'; $('feedback').textContent = '¡DECISIÓN CORRECTA!'; setTimeout(menu, 700) } else { b.classList.add('bad'); $('feedback').className = 'feedback bad'; $('feedback').textContent = 'Inténtalo nuevamente.'; setTimeout(() => b.classList.remove('bad'), 400) } }; h.appendChild(b) }) }
+    </script>
+</body>
+
+</html> 
